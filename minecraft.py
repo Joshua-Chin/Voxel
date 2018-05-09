@@ -1,3 +1,5 @@
+import math
+
 from pyglet.gl import *
 from pyglet.window import key
 
@@ -34,8 +36,21 @@ class Player(object):
          self.rot = [0, 0]
 
     def update(self, dt, keys):
+        s = 10 * dt
+        rotY = (math.pi / 180) * self.rot[1]
+        dx, dz = s * math.sin(rotY), s * math.cos(rotY)
+        if keys[key.W]:
+            self.pos[0] += dx
+            self.pos[2] -= dz
+        if keys[key.S]:
+            self.pos[0] -= dx
+            self.pos[2] += dz
         if keys[key.A]:
-            print('A')
+            self.pos[0] -= dz
+            self.pos[2] -= dx
+        if keys[key.D]:
+            self.pos[0] += dz
+            self.pos[2] += dx
 
 class Window(pyglet.window.Window):
 
@@ -76,6 +91,9 @@ class Window(pyglet.window.Window):
     def on_draw(self):
         self.clear()
         self.set3d()
+        # glRotatef(-30, 1, 0, 0)
+        x, y, z = self.player.pos
+        glTranslatef(-x, -y, -z)
         self.model.draw()
     
     def on_key_press(self, k, modifier):
