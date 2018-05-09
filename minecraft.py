@@ -57,6 +57,11 @@ class Player(object):
         if keys[key.LSHIFT]:
             self.pos[1] -= s
 
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.rot[0] += dy / 4
+        self.rot[1] += dx / 4
+        self.rot[0] = max(-90, min(90, self.rot[0]))
+
 class Window(pyglet.window.Window):
 
     def __init__(self, *args, **kwargs):
@@ -96,7 +101,9 @@ class Window(pyglet.window.Window):
     def on_draw(self):
         self.clear()
         self.set3d()
-        # glRotatef(-30, 1, 0, 0)
+        rot = self.player.rot
+        glRotatef(-rot[0], 1, 0, 0)
+        glRotatef(rot[1], 0, 1, 0)
         x, y, z = self.player.pos
         glTranslatef(-x, -y, -z)
         self.model.draw()
@@ -106,6 +113,10 @@ class Window(pyglet.window.Window):
             self.close()
         elif k == key.E:
             self.mouse_lock = not self.mouse_lock
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self.mouse_lock:
+            self.player.on_mouse_motion(x, y, dx, dy)
 
     @property
     def mouse_lock(self):
