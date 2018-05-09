@@ -29,19 +29,31 @@ class Model(object):
 
 class Player(object):
      
-     def __init__(self):
+    def __init__(self):
          self.pos = [0, 0, 0]
          self.rot = [0, 0]
+
+    def update(self, dt, keys):
+        if keys[key.A]:
+            print('A')
 
 class Window(pyglet.window.Window):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.set_minimum_size(400, 300)
+        self.keys = key.KeyStateHandler()
+        self.push_handlers(self.keys)
+        pyglet.clock.schedule(self.update)
+
         glClearColor(.52, .80, .91, 1)
+        
         self.model = Model()
         self.player = Player()
         self._lock = False
+
+    def update(self, dt):
+        self.player.update(dt, self.keys)
 
     def projection(self):
         glMatrixMode(GL_PROJECTION)
