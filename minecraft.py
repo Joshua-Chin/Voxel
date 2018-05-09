@@ -24,6 +24,7 @@ class Model(object):
     def get_texture(self, file):
         texture = pyglet.image.load(file).texture
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         return pyglet.graphics.TextureGroup(texture)
 
 class Window(pyglet.window.Window):
