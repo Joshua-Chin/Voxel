@@ -18,8 +18,14 @@ class Model(object):
         tex_coords = ('t2f', (0,0, 1,0, 1,1, 0,1))
 
         self.batch.add(4, GL_QUADS, self.side,
-            ('v3f', [x,y,z, X,y,z, X,Y,z, x,Y,z]), tex_coords)
-
+            ('v3f', [X,y,z, x,y,z, x,Y,z, X,Y,z]), tex_coords) # front
+        self.batch.add(4, GL_QUADS, self.side,
+            ('v3f', [x,y,Z, X,y,Z, X,Y,Z, x,Y,Z]), tex_coords) # back
+        self.batch.add(4, GL_QUADS, self.side,
+            ('v3f', [x,y,z, x,y,Z, x,Y,Z, x,Y,z]), tex_coords) # left
+        self.batch.add(4, GL_QUADS, self.side,
+            ('v3f', [X,y,Z, X,y,z, X,Y,z, X,Y,Z]), tex_coords) # right
+ 
     def draw(self):
         self.batch.draw()
 
@@ -130,6 +136,7 @@ class Window(pyglet.window.Window):
 
 def main():
     Window(resizable=True, caption="Joshua's Minecraft")
+    glEnable(GL_DEPTH_TEST)
     pyglet.app.run()
 
 if __name__ == '__main__':
