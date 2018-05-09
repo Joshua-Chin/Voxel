@@ -9,7 +9,7 @@ class Model(object):
         x,y,z = 0,0,0
         X,Y,Z = x+1,y+1,z+1
 
-        color = (1,1,1) * 4
+        color = ('c3f', (1,1,1) * 4)
 
         self.batch.add(4, GL_QUADS, None,
             ('v3f', [x,y,z, X,y,z, X,Y,z, x,Y,z]), color)
