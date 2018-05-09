@@ -6,7 +6,7 @@ class Model(object):
     def __init__(self):
         self.batch = pyglet.graphics.Batch()
 
-        x,y,z = 0,0,0
+        x,y,z = 0,0,-1
         X,Y,Z = x+1,y+1,z+1
 
         color = ('c3f', (1,1,1) * 4)
@@ -26,10 +26,15 @@ class Window(pyglet.window.Window):
         self.model = Model()
 
     def set3d(self):
-        pass
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluPerspective(70, self.width/self.height, 0.5, 1000)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
 
     def on_draw(self):
         self.clear()
+        self.set3d()
         self.model.draw()
 
 def main():
