@@ -4,18 +4,26 @@ from pyglet.gl import *
 class Model(object):
 
     def __init__(self):
+        self.top = self.get_texture('grass_top.png')
+        self.side = self.get_texture('grass_side.png')
+        self.bottom = self.get_texture('dirt.png')
+
         self.batch = pyglet.graphics.Batch()
 
         x,y,z = 0,0,-1
         X,Y,Z = x+1,y+1,z+1
 
-        color = ('c3f', (1,1,1) * 4)
+        tex_coords = ('t2f', (0,0, 1,0, 1,1, 0,1))
 
-        self.batch.add(4, GL_QUADS, None,
-            ('v3f', [x,y,z, X,y,z, X,Y,z, x,Y,z]), color)
+        self.batch.add(4, GL_QUADS, self.side,
+            ('v3f', [x,y,z, X,y,z, X,Y,z, x,Y,z]), tex_coords)
 
     def draw(self):
         self.batch.draw()
+
+    def get_texture(self, file):
+        texture = pyglet.image.load(file).texture
+        return pyglet.graphics.TextureGroup(texture)
 
 class Window(pyglet.window.Window):
 
