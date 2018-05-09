@@ -52,6 +52,11 @@ class Player(object):
             self.pos[0] += dz
             self.pos[2] += dx
 
+        if keys[key.SPACE]:
+            self.pos[1] += s
+        if keys[key.LSHIFT]:
+            self.pos[1] -= s
+
 class Window(pyglet.window.Window):
 
     def __init__(self, *args, **kwargs):
@@ -99,7 +104,7 @@ class Window(pyglet.window.Window):
     def on_key_press(self, k, modifier):
         if k == key.ESCAPE:
             self.close()
-        elif k == key.SPACE:
+        elif k == key.E:
             self.mouse_lock = not self.mouse_lock
 
     @property
