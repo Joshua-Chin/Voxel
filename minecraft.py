@@ -1,5 +1,5 @@
 from pyglet.gl import *
-
+from pyglet.window import key
 
 class Model(object):
 
@@ -27,6 +27,12 @@ class Model(object):
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         return pyglet.graphics.TextureGroup(texture)
 
+class Player(object):
+     
+     def __init__(self):
+         self.pos = [0, 0, 0]
+         self.rot = [0, 0]
+
 class Window(pyglet.window.Window):
 
     def __init__(self, *args, **kwargs):
@@ -34,6 +40,8 @@ class Window(pyglet.window.Window):
         self.set_minimum_size(400, 300)
         glClearColor(.52, .80, .91, 1)
         self.model = Model()
+        self.player = Player()
+        self._lock = False
 
     def projection(self):
         glMatrixMode(GL_PROJECTION)
@@ -57,6 +65,22 @@ class Window(pyglet.window.Window):
         self.clear()
         self.set3d()
         self.model.draw()
+    
+    def on_key_press(self, k, modifier):
+        if k == key.ESCAPE:
+            self.close()
+        elif k == key.SPACE:
+            self.mouse_lock = not self.mouse_lock
+
+    @property
+    def mouse_lock(self):
+        return self._lock
+
+    @mouse_lock.setter
+    def mouse_lock(self, state):
+        self._lock = state
+        self.set_exclusive_mouse(state)
+    
 
 def main():
     Window(resizable=True, caption="Joshua's Minecraft")
