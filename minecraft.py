@@ -1,43 +1,56 @@
 import math
 
+import pyglet.image as image
+import pyglet.graphics as graphics
+
 from pyglet.gl import *
 from pyglet.window import key
+from pyglet.image.atlas import TextureAtlas
+
+class Textures(object):
+    
+    def __init__(self, dir):
+        self.atlas = TextureAtlas()
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        self.dir = dir
+
+    def add(self, name):
+        return ('t3f', self.atlas.add(image.load(f'{self.dir}{name}')).tex_coords)
 
 class Model(object):
 
     def __init__(self):
-        self.top = self.get_texture('grass_top.png')
-        self.side = self.get_texture('grass_side.png')
-        self.bottom = self.get_texture('dirt.png')
+        tex = Textures('textures/')
+        group = graphics.TextureGroup(tex.atlas.texture)
+        self.top = tex.add('grass_top.png')
+        self.side = tex.add('grass_side.png')
+        self.bottom = tex.add('dirt.png')
 
         self.batch = pyglet.graphics.Batch()
 
         x,y,z = 0,0,-1
         X,Y,Z = x+1,y+1,z+1
 
-        tex_coords = ('t2f', (0,0, 1,0, 1,1, 0,1))
+        self.batch.add(4, GL_QUADS, group,
+            ('v3f', [X,y,z, x,y,z, x,Y,z, X,Y,z]), self.side) # front
+        self.batch.add(4, GL_QUADS, group,
+            ('v3f', [x,y,Z, X,y,Z, X,Y,Z, x,Y,Z]), self.side) # back
+        self.batch.add(4, GL_QUADS, group,
+            ('v3f', [x,y,z, x,y,Z, x,Y,Z, x,Y,z]), self.side) # left
+        self.batch.add(4, GL_QUADS, group,
+            ('v3f', [X,y,Z, X,y,z, X,Y,z, X,Y,Z]), self.side) # right
 
-        self.batch.add(4, GL_QUADS, self.side,
-            ('v3f', [X,y,z, x,y,z, x,Y,z, X,Y,z]), tex_coords) # front
-        self.batch.add(4, GL_QUADS, self.side,
-            ('v3f', [x,y,Z, X,y,Z, X,Y,Z, x,Y,Z]), tex_coords) # back
-        self.batch.add(4, GL_QUADS, self.side,
-            ('v3f', [x,y,z, x,y,Z, x,Y,Z, x,Y,z]), tex_coords) # left
-        self.batch.add(4, GL_QUADS, self.side,
-            ('v3f', [X,y,Z, X,y,z, X,Y,z, X,Y,Z]), tex_coords) # right
-
-        self.batch.add(4, GL_QUADS, self.top,
-                    ('v3f', [x,Y,Z, X,Y,Z, X,Y,z, x,Y,z]), tex_coords) # top
-        self.batch.add(4, GL_QUADS, self.bottom,
-                    ('v3f', [x,y,z, X,y,z, X,y,Z, x,y,Z]), tex_coords) # top       
+        self.batch.add(4, GL_QUADS, group,
+                    ('v3f', [x,Y,Z, X,Y,Z, X,Y,z, x,Y,z]), self.top) # top
+        self.batch.add(4, GL_QUADS, group,
+                    ('v3f', [x,y,z, X,y,z, X,y,Z, x,y,Z]), self.bottom) # top       
 
     def draw(self):
         self.batch.draw()
 
     def get_texture(self, file):
-        texture = pyglet.image.load(file).texture
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        texture = pyglet.image.load(file).get_texture()
         return pyglet.graphics.TextureGroup(texture)
 
 class Player(object):
@@ -77,12 +90,16 @@ class Window(pyglet.window.Window):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_CULL_FACE)
+        glClearColor(.52, .80, .91, 1)
+
         self.set_minimum_size(400, 300)
         self.keys = key.KeyStateHandler()
         self.push_handlers(self.keys)
         pyglet.clock.schedule(self.update)
 
-        glClearColor(.52, .80, .91, 1)
         
         self.model = Model()
         self.player = Player()
@@ -141,8 +158,6 @@ class Window(pyglet.window.Window):
 
 def main():
     Window(resizable=True, caption="Joshua's Minecraft")
-    glEnable(GL_DEPTH_TEST)
-    glEnable(GL_CULL_FACE)
     pyglet.app.run()
 
 if __name__ == '__main__':
