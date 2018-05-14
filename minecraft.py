@@ -1,31 +1,21 @@
 import math
 
+from textures import Textures
+
 import pyglet.image as image
 import pyglet.graphics as graphics
 
 from pyglet.gl import *
 from pyglet.window import key
-from pyglet.image.atlas import TextureAtlas
-
-class Textures(object):
-    
-    def __init__(self, dir):
-        self.atlas = TextureAtlas()
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        self.dir = dir
-
-    def add(self, name):
-        return ('t3f', self.atlas.add(image.load(f'{self.dir}{name}')).tex_coords)
 
 class Model(object):
 
     def __init__(self):
-        tex = Textures('textures/')
-        group = graphics.TextureGroup(tex.atlas.texture)
-        self.top = tex.add('grass_top.png')
-        self.side = tex.add('grass_side.png')
-        self.bottom = tex.add('dirt.png')
+        self.textures = Textures('textures/')
+        group = self.textures.group
+        self.top = self.textures.grass_top
+        self.side = self.textures.grass_side
+        self.bottom = self.textures.dirt
 
         self.batch = pyglet.graphics.Batch()
 
