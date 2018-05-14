@@ -39,14 +39,10 @@ class Model(object):
     def draw(self):
         self.batch.draw()
 
-    def get_texture(self, file):
-        texture = pyglet.image.load(file).get_texture()
-        return pyglet.graphics.TextureGroup(texture)
-
 class Player(object):
      
     def __init__(self):
-         self.pos = [0, 0, 0]
+         self.pos = [0, 0, 2]
          self.rot = [0, 0]
 
     def update(self, dt, keys):
@@ -89,7 +85,6 @@ class Window(pyglet.window.Window):
         self.keys = key.KeyStateHandler()
         self.push_handlers(self.keys)
         pyglet.clock.schedule(self.update)
-
         
         self.model = Model()
         self.player = Player()
