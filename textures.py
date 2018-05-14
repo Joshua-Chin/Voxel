@@ -18,4 +18,4 @@ class Textures(object):
     def add(self, path):
         image = pyglet.image.load(path)
         region = self.atlas.add(image)
-        return ('t3f', region.tex_coords)
+        return region.tex_coords

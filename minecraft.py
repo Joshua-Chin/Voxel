@@ -12,29 +12,38 @@ class Model(object):
 
     def __init__(self):
         self.textures = Textures('textures/')
-        group = self.textures.group
-        self.top = self.textures.grass_top
-        self.side = self.textures.grass_side
-        self.bottom = self.textures.dirt
-
+        self.group = self.textures.group
         self.batch = pyglet.graphics.Batch()
 
-        x,y,z = 0,0,-1
-        X,Y,Z = x+1,y+1,z+1
+        top = self.textures.grass_top
+        side = self.textures.grass_side
+        bottom = self.textures.dirt
+        grass = (side, top, bottom)
 
-        self.batch.add(4, GL_QUADS, group,
-            ('v3f', [X,y,z, x,y,z, x,Y,z, X,Y,z]), self.side) # front
-        self.batch.add(4, GL_QUADS, group,
-            ('v3f', [x,y,Z, X,y,Z, X,Y,Z, x,Y,Z]), self.side) # back
-        self.batch.add(4, GL_QUADS, group,
-            ('v3f', [x,y,z, x,y,Z, x,Y,Z, x,Y,z]), self.side) # left
-        self.batch.add(4, GL_QUADS, group,
-            ('v3f', [X,y,Z, X,y,z, X,Y,z, X,Y,Z]), self.side) # right
+        for i in range(-10, 10):
+            for j in range(-10, 10):
+                self.add_block((i,0,j), grass)
 
-        self.batch.add(4, GL_QUADS, group,
-                    ('v3f', [x,Y,Z, X,Y,Z, X,Y,z, x,Y,z]), self.top) # top
-        self.batch.add(4, GL_QUADS, group,
-                    ('v3f', [x,y,z, X,y,z, X,y,Z, x,y,Z]), self.bottom) # top       
+
+    def add_block(self, position, textures):
+        (x, X), (y, Y), (z, Z) = [(coord-0.5, coord+0.5) for coord in position]
+        vertices = ('v3f', [
+            X,y,z, x,y,z, x,Y,z, X,Y,z, # front
+            x,y,Z, X,y,Z, X,Y,Z, x,Y,Z, # back
+            x,y,z, x,y,Z, x,Y,Z, x,Y,z, # left
+            X,y,Z, X,y,z, X,Y,z, X,Y,Z, # right
+            x,Y,Z, X,Y,Z, X,Y,z, x,Y,z, # top
+            x,y,z, X,y,z, X,y,Z, x,y,Z, # bottom
+        ])
+
+        side, top, bottom = textures
+        tex_coords = ('t3f', side + side + side + side + top + bottom)
+        
+        ns, ew, top, bottom = (0.8,) * 12, (0.6,) * 12, (1.0,) * 12, (0.5,) * 12
+        color_coords = ('c3f', ns * 2 + ew * 2 + top + bottom)
+
+        self.batch.add(24, GL_QUADS, self.group, vertices, tex_coords, color_coords)
+
 
     def draw(self):
         self.batch.draw()
@@ -42,7 +51,7 @@ class Model(object):
 class Player(object):
      
     def __init__(self):
-         self.pos = [0, 0, 2]
+         self.pos = [0, 3, 0]
          self.rot = [0, 0]
 
     def update(self, dt, keys):
@@ -142,7 +151,8 @@ class Window(pyglet.window.Window):
     
 
 def main():
-    Window(resizable=True, caption="Joshua's Minecraft")
+    window = Window(resizable=True, caption="Joshua's Minecraft")
+    window.set_exclusive_mouse(True)
     pyglet.app.run()
 
 if __name__ == '__main__':
