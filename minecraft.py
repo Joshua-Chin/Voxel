@@ -14,6 +14,7 @@ class Model(object):
         self.textures = Textures('textures/')
         self.group = self.textures.group
         self.batch = pyglet.graphics.Batch()
+        self.blocks = {}
 
         top = self.textures.grass_top
         side = self.textures.grass_side
@@ -42,8 +43,8 @@ class Model(object):
         ns, ew, top, bottom = (0.8,) * 12, (0.6,) * 12, (1.0,) * 12, (0.5,) * 12
         color_coords = ('c3f', ns * 2 + ew * 2 + top + bottom)
 
-        self.batch.add(24, GL_QUADS, self.group, vertices, tex_coords, color_coords)
-
+        vl = self.batch.add(24, GL_QUADS, self.group, vertices, tex_coords, color_coords)
+        self.blocks[position] = vl
 
     def draw(self):
         self.batch.draw()
