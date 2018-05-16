@@ -7,6 +7,7 @@ from pyglet.gl import *
 from pyglet.window import key
 
 import textures
+import noise
 
 class Model(object):
 
@@ -15,16 +16,12 @@ class Model(object):
         self.batch = pyglet.graphics.Batch()
         self.blocks = {}
 
-        for i in range(-10, 10):
-            for j in range(-10, 10):
-                self.add_block((i,0,j), textures.grass)
-
-        for i in range(-2, 3):
-            self.add_block((0, i +3, 0), textures.log)
-            for j in range(-2, 3):
-                for k in range(-2, 3):
-                    self.add_block((i, j+5, k), textures.leaves)
-
+        n = noise.Combined(noise.Octave(5, 15), noise.Octave(5, 15))
+        for x in range(-30, 31):
+            for z in range(-30, 31):
+                b = int(n[x, z])
+                for y in range(b-2, b):
+                    self.add_block((x, y, z), textures.grass)
 
     def add_block(self, position, tex_coords):
         (x, X), (y, Y), (z, Z) = [(coord-0.5, coord+0.5) for coord in position]
