@@ -11,22 +11,17 @@ from pyglet.window import key
 class Model(object):
 
     def __init__(self):
-        self.textures = Textures('textures/')
+        self.textures = Textures()
         self.group = self.textures.group
         self.batch = pyglet.graphics.Batch()
         self.blocks = {}
 
-        top = self.textures.grass_top
-        side = self.textures.grass_side
-        bottom = self.textures.dirt
-        grass = (side, top, bottom)
-
         for i in range(-10, 10):
             for j in range(-10, 10):
-                self.add_block((i,0,j), grass)
+                self.add_block((i,0,j), self.textures.grass)
 
 
-    def add_block(self, position, textures):
+    def add_block(self, position, tex_coords):
         (x, X), (y, Y), (z, Z) = [(coord-0.5, coord+0.5) for coord in position]
         vertices = ('v3f', [
             X,y,z, x,y,z, x,Y,z, X,Y,z, # front
@@ -36,9 +31,6 @@ class Model(object):
             x,Y,Z, X,Y,Z, X,Y,z, x,Y,z, # top
             x,y,z, X,y,z, X,y,Z, x,y,Z, # bottom
         ])
-
-        side, top, bottom = textures
-        tex_coords = ('t3f', side + side + side + side + top + bottom)
         
         ns, ew, top, bottom = (0.8,) * 12, (0.6,) * 12, (1.0,) * 12, (0.5,) * 12
         color_coords = ('c3f', ns * 2 + ew * 2 + top + bottom)
