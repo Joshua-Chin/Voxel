@@ -1,26 +1,29 @@
 import math
 
-from textures import Textures
-
 import pyglet.image as image
 import pyglet.graphics as graphics
 
 from pyglet.gl import *
 from pyglet.window import key
 
+import textures
+
 class Model(object):
 
     def __init__(self):
-        self.textures = Textures()
-        self.group = self.textures.group
+        self.group = textures.group
         self.batch = pyglet.graphics.Batch()
         self.blocks = {}
 
         for i in range(-10, 10):
             for j in range(-10, 10):
-                self.add_block((i,0,j), self.textures.grass)
+                self.add_block((i,0,j), textures.grass)
 
-        self.add_block((0, 3, 0), self.textures.leaves)
+        for i in range(-2, 3):
+            self.add_block((0, i +3, 0), textures.log)
+            for j in range(-2, 3):
+                for k in range(-2, 3):
+                    self.add_block((i, j+5, k), textures.leaves)
 
 
     def add_block(self, position, tex_coords):
