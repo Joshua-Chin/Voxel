@@ -22,7 +22,7 @@ class Textures(object):
         self.stone = self.block(faces.stone)
         self.water = self.block(faces.water)
         self.bedrock = self.block(faces.bedrock)
-        self.leaves = self.block(faces.leaves_oak)
+        self.leaves = self.block(faces.leaves)
         self.log = self.block(faces.log_oak, faces.log_oak_top)
         self.grass = self.block(faces.grass_side, faces.grass_top, faces.dirt)
 

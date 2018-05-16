@@ -20,6 +20,8 @@ class Model(object):
             for j in range(-10, 10):
                 self.add_block((i,0,j), self.textures.grass)
 
+        self.add_block((0, 3, 0), self.textures.leaves)
+
 
     def add_block(self, position, tex_coords):
         (x, X), (y, Y), (z, Z) = [(coord-0.5, coord+0.5) for coord in position]
@@ -82,7 +84,9 @@ class Window(pyglet.window.Window):
 
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
-        glClearColor(.52, .80, .91, 1)
+        glEnable(GL_ALPHA_TEST)
+        glAlphaFunc(GL_GREATER, 0.0)
+        glClearColor(.52, .80, .91, 1.0)
 
         self.set_minimum_size(400, 300)
         self.keys = key.KeyStateHandler()
